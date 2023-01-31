@@ -7,7 +7,17 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
                 if (element) {
                     if (result[myTabId].requests.active === true) {
-                        element.innerHTML = result[myTabId].requests.urls.length + " appels effectues"
+                        let html = "<div>"
+                        html += result[myTabId].requests.urls.length + " appels effectues"
+                        html += "<ul>";
+                        for(let i = 0 ; i< result[myTabId].requests.urls.length; i++){
+                            html += "<li>";
+                            html += result[myTabId].requests.urls[i].method + " " + result[myTabId].requests.urls[i].status
+                                        + " " + (result[myTabId].requests.urls[i].stopTime - result[myTabId].requests.urls[i].startTime).toFixed(2) + "ms";
+                            html += "</li>";
+                        }
+                        html += "</ul></div>"
+                        element.innerHTML = html;
                     }
                     document.getElementById("PandaScope_Lancer").style.display = result[myTabId].requests.active === false ? "block" : "none";
                     document.getElementById("PandaScope_Arreter").style.display = result[myTabId].requests.active === true ? "block" : "none";
@@ -45,6 +55,10 @@ function startStopInspection(active) {
             myTabId = tabs[0].id.toString();
 
             chrome.storage.local.get([myTabId]).then((result) => {
+                if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
+                    result[myTabId] = getDefaultStorageValue();
+                }
+
                 result[myTabId].requests.active = active;
                 chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });
