@@ -7,7 +7,10 @@ function logURL(requestDetails) {
                 if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
                     result[myTabId] = getDefaultStorageValue();
                 }
-                result[myTabId].requests.urls.push(`${requestDetails.url}`);
+                if (result[myTabId].requests.active === true) {
+                    result[myTabId].requests.urls.push(`${requestDetails.url}`);
+                }
+
                 chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });
         }

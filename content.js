@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
             myTabId = tabs[0].id.toString();
             chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
                 if (element) {
-                    element.innerHTML = result[myTabId].requests.urls.length + " appels effectues"
+                    if (result[myTabId].requests.active === true) {
+                        element.innerHTML = result[myTabId].requests.urls.length + " appels effectues"
+                    }
                     document.getElementById("PandaScope_Lancer").style.display = result[myTabId].requests.active === false ? "block" : "none";
                     document.getElementById("PandaScope_Arreter").style.display = result[myTabId].requests.active === true ? "block" : "none";
                 }
@@ -45,7 +47,6 @@ function startStopInspection(active) {
             chrome.storage.local.get([myTabId]).then((result) => {
                 result[myTabId].requests.active = active;
                 chrome.storage.local.set({ [myTabId]: result[myTabId] });
-                alert(result[myTabId].requests.active);
             });
         }
     });
@@ -53,5 +54,4 @@ function startStopInspection(active) {
 
 document.getElementById("PandaScope_clear").addEventListener('click', function() {
     chrome.storage.local.clear();
-    alert("clear done");
 });
