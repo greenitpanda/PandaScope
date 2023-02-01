@@ -4,11 +4,20 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
         if (tabs[0] && tabs[0].id) {
             myTabId = tabs[0].id.toString();
-            chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
-                console.log(result);
+            chrome.storage.local.get([myTabId]).then((result) => {
+                if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
+                    result[myTabId] = getDefaultStorageValue();
+                }
                 if (element) {
                     if (result[myTabId].requests.active === true) {
-                        result[myTabId].requests.completed.sort(GetSortOrder("elapsed"));
+
+                        // Sort the requests to get the 3 longest 
+                        result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
+                            if (b.elapsed < a.elapsed) {
+                                return -1;
+                            }
+                        });
+                          
                         let html = "<div>"
                         html += result[myTabId].requests.began.length + " appels effectues"
                         html += "<ul>";
@@ -29,17 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function GetSortOrder() {    
-    return function(a, b) {    
-        if (a[prop] > b[prop]) {    
-            return 1;    
-        } else if (a[prop] < b[prop]) {    
-            return -1;    
-        }    
-        return 0;    
-    }    
-} 
-
 function getDefaultStorageValue() {
     return {
         requests: {
@@ -54,18 +52,6 @@ document.getElementById("PandaScope_Lancer").addEventListener('click', function(
     startStopInspection(true);
     document.getElementById("PandaScope_Lancer").style.display = "none";
     document.getElementById("PandaScope_Arreter").style.display = "block";
-    let myTabId;
-    chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
-        if (tabs[0] && tabs[0].id) {
-            myTabId = tabs[0].id.toString();
-            chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
-                chrome.storage.local.set({ [myTabId]: result[myTabId]}).then(() => {
-                    if (chrome.runtime.lastError)
-                        alert('Error setting');
-                });
-            });
-        }
-    });
 });
 
 document.getElementById("PandaScope_Arreter").addEventListener('click', function() {
@@ -80,20 +66,17 @@ function startStopInspection(active) {
         if (tabs[0] && tabs[0].id) {
             myTabId = tabs[0].id.toString();
 
-            chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
+            chrome.storage.local.get([myTabId]).then((result) => {
+                if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
+                    result[myTabId] = getDefaultStorageValue();
+                }
                 result[myTabId].requests.active = active;
-                alert(JSON.stringify(result[myTabId]));
-                try {
-                        chrome.storage.local.set({ [myTabId]: result[myTabId] });
-                  } catch (ex) {
-                    alert(ex);
-                  }
+                chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });
         }
     });
 }
 
 document.getElementById("PandaScope_clear").addEventListener('click', function() {
-    alert("clear");
     chrome.storage.local.clear();
 });

@@ -3,7 +3,10 @@ function logRequest(requestDetails) {
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
         if (tabs[0] && tabs[0].id) {
             myTabId = tabs[0].id.toString();
-            chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
+            chrome.storage.local.get([myTabId]).then((result) => {
+                if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
+                    result[myTabId] = getDefaultStorageValue();
+                }
                 if (result[myTabId].requests.active === true) {
                     result[myTabId].requests.began.push({
                         url: requestDetails.url,
@@ -11,8 +14,8 @@ function logRequest(requestDetails) {
                         startTime: requestDetails.timeStamp,
                         method: requestDetails.method
                     });
+                    chrome.storage.local.set({ [myTabId]: result[myTabId] });
                 }
-                chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });
         }
     });
@@ -40,9 +43,9 @@ function logComplete(requestDetails) {
                             });
                         }
                     }
+                    chrome.storage.local.set({ [myTabId]: result[myTabId] });
                 }
 
-                chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });
         }
     });
@@ -69,9 +72,9 @@ function logError(requestDetails) {
                             });
                         }
                     }
+                    chrome.storage.local.set({ [myTabId]: result[myTabId] });
                 }
 
-                chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });
         }
     });
