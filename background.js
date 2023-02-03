@@ -39,7 +39,7 @@ function logComplete(requestDetails) {
                                 method: result[myTabId].requests.began[i].method,
                                 status: requestDetails.statusCode,
                                 stopTime: requestDetails.timeStamp,
-                                elapsed: requestDetails.timeStamp - result[myTabId].requests.began[i].startTime
+                                elapsed: (requestDetails.timeStamp - result[myTabId].requests.began[i].startTime).toFixed(2)
                             });
                         }
                     }
@@ -67,7 +67,7 @@ function logError(requestDetails) {
                                 method: result[myTabId].requests.began[i].method,
                                 status: requestDetails.statusCode,
                                 stopTime: requestDetails.timeStamp,
-                                elapsed: requestDetails.timeStamp - result[myTabId].requests.began[i].startTime,
+                                elapsed: (requestDetails.timeStamp - result[myTabId].requests.began[i].startTime).toFixed(2),
                                 error: requestDetails.error
                             });
                         }

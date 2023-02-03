@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let element = document.getElementById("PandaScope_NbElements");
+    let nbElements = document.getElementById("nb_elements");
+    let top3weight = document.getElementById("top3weight");
     let myTabId;
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
         if (tabs[0] && tabs[0].id) {
@@ -8,27 +9,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
                     result[myTabId] = getDefaultStorageValue();
                 }
-                if (element) {
+                if (nbElements) {
                     if (result[myTabId].requests.active === true) {
 
-                        // Sort the requests to get the 3 longest 
+                        // Sort the requests to get the longest 
                         result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
                             if (b.elapsed < a.elapsed) {
                                 return -1;
                             }
                         });
                           
-                        let html = "<div>"
-                        html += result[myTabId].requests.began.length + " appels effectues"
-                        html += "<ul>";
-                        for(let i = 0 ; i< 3; i++){
+
+                        let html = ""
+                        for(let i = 0 ; i< 5; i++){
                             html += "<li>";
-                            html += result[myTabId].requests.completed[i].method + " " + result[myTabId].requests.completed[i].status
-                                        + " " + result[myTabId].requests.completed[i].elapsed + "ms";
+                            html += result[myTabId].requests.completed[i].method + " " + result[myTabId].requests.completed[i].url
+                                        + " <span style=\"color:red;font-weight:bold;\">" + result[myTabId].requests.completed[i].elapsed + "ms</span>";
                             html += "</li>";
                         }
-                        html += "</ul></div>"
-                        element.innerHTML = html;
+                        nbElements.innerHTML = result[myTabId].requests.began.length + " appels effectu&eacute;s";
+                        top3weight.innerHTML = html;
                     }
                     document.getElementById("PandaScope_Lancer").style.display = result[myTabId].requests.active === false ? "block" : "none";
                     document.getElementById("PandaScope_Arreter").style.display = result[myTabId].requests.active === true ? "block" : "none";
