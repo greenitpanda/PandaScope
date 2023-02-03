@@ -1,23 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let element = document.getElementById("PandaScope_NbElements");
+    let nbElements = document.getElementById("nb_elements");
+    let top3weight = document.getElementById("top3weight");
     let myTabId;
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
         if (tabs[0] && tabs[0].id) {
             myTabId = tabs[0].id.toString();
-            chrome.storage.local.get({[myTabId] : getDefaultStorageValue()}).then((result) => {
-                if (element) {
+            chrome.storage.local.get([myTabId]).then((result) => {
+                if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
+                    result[myTabId] = getDefaultStorageValue();
+                }
+                if (nbElements) {
                     if (result[myTabId].requests.active === true) {
-                        let html = "<div>"
-                        html += result[myTabId].requests.urls.length + " appels effectues"
-                        html += "<ul>";
-                        for(let i = 0 ; i< result[myTabId].requests.urls.length; i++){
+
+                        // Sort the requests to get the longest 
+                        result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
+                            if (b.elapsed < a.elapsed) {
+                                return -1;
+                            }
+                        });
+                          
+
+                        let html = ""
+                        for(let i = 0 ; i< 5; i++){
                             html += "<li>";
-                            html += result[myTabId].requests.urls[i].method + " " + result[myTabId].requests.urls[i].status
-                                        + " " + (result[myTabId].requests.urls[i].stopTime - result[myTabId].requests.urls[i].startTime).toFixed(2) + "ms";
+                            html += result[myTabId].requests.completed[i].method + " " + result[myTabId].requests.completed[i].url
+                                        + " <span style=\"color:red;font-weight:bold;\">" + result[myTabId].requests.completed[i].elapsed + "ms</span>";
                             html += "</li>";
                         }
-                        html += "</ul></div>"
-                        element.innerHTML = html;
+                        nbElements.innerHTML = result[myTabId].requests.began.length + " appels effectu&eacute;s";
+                        top3weight.innerHTML = html;
                     }
                     document.getElementById("PandaScope_Lancer").style.display = result[myTabId].requests.active === false ? "block" : "none";
                     document.getElementById("PandaScope_Arreter").style.display = result[myTabId].requests.active === true ? "block" : "none";
@@ -30,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function getDefaultStorageValue() {
     return {
         requests: {
-            urls: [],
+            began: [],
+            completed: [],
             active: false
         }
     };
@@ -58,7 +70,6 @@ function startStopInspection(active) {
                 if (!result || (Object.keys(result).length === 0 || Object.keys(result[myTabId]).length === 0)) {
                     result[myTabId] = getDefaultStorageValue();
                 }
-
                 result[myTabId].requests.active = active;
                 chrome.storage.local.set({ [myTabId]: result[myTabId] });
             });

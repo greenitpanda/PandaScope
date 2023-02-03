@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div>PandaScope</div>
-    <div>
-      <input class="favorite styled"
-        id="PandaScope_Lancer"
-        type="button"
-        value="Start"
-        ><br />
-      <input class="favorite styled"
-        id="PandaScope_Arreter"
-        type="button"
-        value="Stop"
-        style="display: none"
-        ><br />
-      <input class="favorite styled"
-        id="PandaScope_clear"
-        type="button"
-        value="Clear"
-        >
+    <div class="title">PandaScope</div>
+    <div class="content">
+      <div class="actions">
+        <div class="start"
+          id="PandaScope_Lancer"
+          ></div>
+        <input class="stop"
+          id="PandaScope_Arreter"
+          type="button"
+          style="display: none"
+          >
+        <input class="clear"
+          id="PandaScope_clear"
+          type="button"
+          >
+      </div>
+      <div id="PandaScope_NbElements" class="content-analysis">
+        <p id="nb_elements" class="nb-elements"></p>
+        <ul id="top3weight">
+        </ul>
+      </div>
     </div>
-    <div id="PandaScope_NbElements"></div>
     <script defer src="background.js"></script>
     <script defer src="content.js"></script>
   </body>
