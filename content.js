@@ -16,7 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
                             if (b.elapsed < a.elapsed) {
                                 return -1;
+                            } else if(b.elapsed > a.elapsed) {
+                                return -1;
                             }
+                            return 0; 
                         });
                           
 
