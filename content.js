@@ -16,12 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
                             return b.elapsed - a.elapsed;
                         });
-                          
 
                         let html = ""
                         for(let i = 0 ; i< 5; i++){
-                            html += "<li>";
-                            html += result[myTabId].requests.completed[i].method + " " + result[myTabId].requests.completed[i].url
+                            html += "<li title='" + result[myTabId].requests.completed[i].url + "'>";
+                            let subUrl = result[myTabId].requests.completed[i].url.substring(0, 50);
+                            html += "<b>" + result[myTabId].requests.completed[i].method + "</b> " + subUrl + "..."
                                         + " <span style=\"color:red;font-weight:bold;\">" + result[myTabId].requests.completed[i].elapsed + "ms</span>";
                             html += "</li>";
                         }
