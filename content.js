@@ -14,12 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         // Sort the requests to get the longest 
                         result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
-                            if (b.elapsed < a.elapsed) {
-                                return -1;
-                            } else if(b.elapsed > a.elapsed) {
-                                return -1;
-                            }
-                            return 0; 
+                            return b.elapsed - a.elapsed;
                         });
                           
 
