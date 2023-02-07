@@ -21,6 +21,12 @@ body {
     text-align: center;
 }
 
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .start {
     width: 0; 
     height: 0; 
@@ -29,7 +35,6 @@ body {
     border-left: 10px solid #72A852;
     border-right: none;
     background-color: white;
-    float: left;
     cursor: pointer;
 }
 
@@ -38,12 +43,10 @@ body {
     height: 16px; 
     background-color: red;
     border: none;
-    float: left;
     cursor: pointer;
 }
 
 .clear {
-    float: right;
     width: 16px; 
     height: 16px;
     background-image: url("./bin.png");
@@ -51,6 +54,7 @@ body {
     border: none;
     background-color: white;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 .nb-elements {
@@ -66,4 +70,8 @@ body {
 .content-analysis {
     clear: both;
     padding-top: 4px;
+}
+
+#top3weight li {
+    width: 220px;
 }
