@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
+    displayElementsPopup();
+});
+
+function displayElementsPopup() {
     let nbElements = document.getElementById("nb_elements");
     let top3weight = document.getElementById("top3weight");
     let myTabId;
@@ -11,24 +15,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (nbElements) {
                     if (result[myTabId].requests.active === true) {
-
+                        
                         // Sort the requests to get the longest 
                         result[myTabId].requests.completed = result[myTabId].requests.completed.sort((a, b) => {
-                            if (b.elapsed < a.elapsed) {
-                                return -1;
-                            } else if(b.elapsed > a.elapsed) {
-                                return -1;
-                            }
-                            return 0; 
+                            return b.elapsed - a.elapsed;
                         });
-                          
 
                         let html = ""
-                        for(let i = 0 ; i< 5; i++){
-                            html += "<li>";
-                            html += result[myTabId].requests.completed[i].method + " " + result[myTabId].requests.completed[i].url
-                                        + " <span style=\"color:red;font-weight:bold;\">" + result[myTabId].requests.completed[i].elapsed + "ms</span>";
-                            html += "</li>";
+                        if (result[myTabId].requests.completed.length > 0) {
+
+                            let maxIterations = result[myTabId].requests.completed.length > 5 ? 5 : result[myTabId].requests.completed.length;
+                            for(let i = 0 ; i< maxIterations; i++){
+                                html += "<li title='" + result[myTabId].requests.completed[i].url + "'>";
+                                let subUrl = result[myTabId].requests.completed[i].url.substring(0, 40);
+                                html += "<b>" + result[myTabId].requests.completed[i].method + "</b> " + subUrl + "..."
+                                            + " <span style=\"color:red;font-weight:bold;\">" + result[myTabId].requests.completed[i].elapsed + "ms</span>";
+                                html += "</li>";
+                            }
                         }
                         nbElements.innerHTML = result[myTabId].requests.began.length + " appels effectu&eacute;s";
                         top3weight.innerHTML = html;
@@ -39,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-});
+}
 
 function getDefaultStorageValue() {
     return {
@@ -55,12 +58,15 @@ document.getElementById("PandaScope_Lancer").addEventListener('click', function(
     startStopInspection(true);
     document.getElementById("PandaScope_Lancer").style.display = "none";
     document.getElementById("PandaScope_Arreter").style.display = "block";
+    displayElementsPopup();
+    document.getElementById("PandaScope_NbElements").style.display = "block";
 });
 
 document.getElementById("PandaScope_Arreter").addEventListener('click', function() {
     startStopInspection(false);
     document.getElementById("PandaScope_Lancer").style.display = "block";
     document.getElementById("PandaScope_Arreter").style.display = "none";
+    document.getElementById("PandaScope_NbElements").style.display = "none";
 });
 
 function startStopInspection(active) {
@@ -82,4 +88,14 @@ function startStopInspection(active) {
 
 document.getElementById("PandaScope_clear").addEventListener('click', function() {
     chrome.storage.local.clear();
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+        if (tabs[0] && tabs[0].id) {
+            myTabId = tabs[0].id.toString();
+
+            chrome.storage.local.remove([myTabId]);
+            document.getElementById("PandaScope_Lancer").style.display = "block";
+            document.getElementById("PandaScope_Arreter").style.display = "none";
+            document.getElementById("PandaScope_NbElements").style.display = "none";
+        }
+    });
 });
