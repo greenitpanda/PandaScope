@@ -56,17 +56,10 @@ function getDefaultStorageValue() {
 
 document.getElementById("PandaScope_Lancer").addEventListener('click', function() {
     startStopInspection(true);
-    document.getElementById("PandaScope_Lancer").style.display = "none";
-    document.getElementById("PandaScope_Arreter").style.display = "block";
-    displayElementsPopup();
-    document.getElementById("PandaScope_NbElements").style.display = "block";
 });
 
 document.getElementById("PandaScope_Arreter").addEventListener('click', function() {
     startStopInspection(false);
-    document.getElementById("PandaScope_Lancer").style.display = "block";
-    document.getElementById("PandaScope_Arreter").style.display = "none";
-    document.getElementById("PandaScope_NbElements").style.display = "none";
 });
 
 function startStopInspection(active) {
@@ -81,6 +74,16 @@ function startStopInspection(active) {
                 }
                 result[myTabId].requests.active = active;
                 chrome.storage.local.set({ [myTabId]: result[myTabId] });
+                if (active === true) {
+                    document.getElementById("PandaScope_Lancer").style.display = "none";
+                    document.getElementById("PandaScope_Arreter").style.display = "block";
+                    document.getElementById("PandaScope_NbElements").style.display = "block";
+                    displayElementsPopup();
+                } else {
+                    document.getElementById("PandaScope_Lancer").style.display = "block";
+                    document.getElementById("PandaScope_Arreter").style.display = "none";
+                    document.getElementById("PandaScope_NbElements").style.display = "none";
+                }
             });
         }
     });
