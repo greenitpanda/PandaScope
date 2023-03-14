@@ -1,6 +1,6 @@
 @font-face {
     font-family: "POPPINS";
-    src: url("./poppins.regular.ttf");
+    src: url("../assets/poppins.regular.ttf");
 }
 
 html {
@@ -49,7 +49,7 @@ body {
 .clear {
     width: 16px; 
     height: 16px;
-    background-image: url("./bin.png");
+    background-image: url("../icons/bin.png");
     background-repeat: no-repeat;
     border: none;
     background-color: white;

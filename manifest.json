@@ -4,17 +4,17 @@
   "version": "1.0.1",
   "manifest_version": 3,
   "icons": {
-    "16": "scope_16.png",
-    "128": "scope_128.png"
+    "16": "icons/scope_16.png",
+    "128": "icons/scope_128.png"
   },
   "background": {
-      "service_worker": "./background.js"
+      "service_worker": "./scripts/background.js"
   },
   "action": {
-      "default_popup": "./window.html",
+      "default_popup": "./popup/window.html",
       "default_icons": {
-        "16": "scope_16.png",
-        "128": "scope_128.png"
+        "16": "icons/scope_16.png",
+        "128": "icons/scope_128.png"
       }
   },
   "permissions": [
